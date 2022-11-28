@@ -40,7 +40,8 @@ function verifyJWT(req, res, next) {
 
 async function run() {
     try {
-        const appointmentOptionCollection = client.db('theBookSellerPortal').collection('horrorBooks.json');
+        const categoryNameCollection = client.db('theBookSellerPortal').collection('book-category.json');
+        const allBooksCollection = client.db('theBookSellerPortal').collection('horrorBooks.json');
         const thrillerBookOptionCollection = client.db('theBookSellerPortal').collection('thrillerBooks.json');
         const adventureBookOptionCollection = client.db('theBookSellerPortal').collection('AdventureBooks.json');
         const bookingsCollection = client.db('theBookSellerPortal').collection('bookings');
@@ -80,52 +81,67 @@ async function run() {
             res.send(options);
         });
 
-        app.get('/v2/appointmentOptions', async (req, res) => {
-            const date = req.query.date;
-            const options = await appointmentOptionCollection.aggregate([
-                {
-                    $lookup: {
-                        from: 'bookings',
-                        localField: 'name',
-                        foreignField: 'treatment',
-                        pipeline: [
-                            {
-                                $match: {
-                                    $expr: {
-                                        $eq: ['$appointmentDate', date]
-                                    }
-                                }
-                            }
-                        ],
-                        as: 'booked'
-                    }
-                },
-                {
-                    $project: {
-                        name: 1,
-                        price: 1,
-                        slots: 1,
-                        booked: {
-                            $map: {
-                                input: '$booked',
-                                as: 'book',
-                                in: '$$book.slot'
-                            }
-                        }
-                    }
-                },
-                {
-                    $project: {
-                        name: 1,
-                        price: 1,
-                        slots: {
-                            $setDifference: ['$slots', '$booked']
-                        }
-                    }
-                }
-            ]).toArray();
-            res.send(options);
-        })
+        // app.get('/v2/appointmentOptions', async (req, res) => {
+        //     const date = req.query.date;
+        //     const options = await appointmentOptionCollection.aggregate([
+        //         {
+        //             $lookup: {
+        //                 from: 'bookings',
+        //                 localField: 'name',
+        //                 foreignField: 'treatment',
+        //                 pipeline: [
+        //                     {
+        //                         $match: {
+        //                             $expr: {
+        //                                 $eq: ['$appointmentDate', date]
+        //                             }
+        //                         }
+        //                     }
+        //                 ],
+        //                 as: 'booked'
+        //             }
+        //         },
+        //         {
+        //             $project: {
+        //                 name: 1,
+        //                 price: 1,
+        //                 slots: 1,
+        //                 booked: {
+        //                     $map: {
+        //                         input: '$booked',
+        //                         as: 'book',
+        //                         in: '$$book.slot'
+        //                     }
+        //                 }
+        //             }
+        //         },
+        //         {
+        //             $project: {
+        //                 name: 1,
+        //                 price: 1,
+        //                 slots: {
+        //                     $setDifference: ['$slots', '$booked']
+        //                 }
+        //             }
+        //         }
+        //     ]).toArray();
+        //     res.send(options);
+        // })
+       
+
+        app.get('/categories', async (req, res) => {
+            const query = {};
+            const category = await categoryNameCollection.find(query).toArray();
+            res.send(category);
+        });
+
+        app.get('/categories/:id', async (req, res) => {
+            const id = req.params.id;
+            const query = { id: (id) };
+            const cursor = allBooksCollection.find(query);
+            const product = await cursor.toArray()
+            res.send(product);
+        });
 
         app.get('/appointmentSpecialty', async (req, res) => {
             const query = {}
@@ -134,6 +150,11 @@ async function run() {
         })
 
         // finding data of books
+        app.get('/products', async (req, res) => {
+            const query = {}
+            const result = await categoryNameCollection.find(query).project({ }).toArray();
+            res.send(result);
+        })
         app.get('/horrorBooks', async (req, res) => {
             const query = {}
             const result = await appointmentOptionCollection.find(query).project({ }).toArray();
