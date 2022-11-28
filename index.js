@@ -40,9 +40,9 @@ function verifyJWT(req, res, next) {
 
 async function run() {
     try {
-        const appointmentOptionCollection = client.db('theBookSellerPortal ').collection('AdventureBooks.json');
-        const thrillerBookOptionCollection = client.db('theBookSellerPortal ').collection('thrillerBooks.json');
-        const adventureBookOptionCollection = client.db('theBookSellerPortal ').collection('AdventureBooks.json');
+        const appointmentOptionCollection = client.db('theBookSellerPortal').collection('horrorBooks.json');
+        const thrillerBookOptionCollection = client.db('theBookSellerPortal').collection('thrillerBooks.json');
+        const adventureBookOptionCollection = client.db('theBookSellerPortal').collection('AdventureBooks.json');
         const bookingsCollection = client.db('theBookSellerPortal').collection('bookings');
         const usersCollection = client.db('theBookSellerPortal').collection('users');
         const doctorsCollection = client.db('theBookSellerPortal').collection('doctors');
@@ -130,6 +130,23 @@ async function run() {
         app.get('/appointmentSpecialty', async (req, res) => {
             const query = {}
             const result = await appointmentOptionCollection.find(query).project({ name: 1 }).toArray();
+            res.send(result);
+        })
+
+        // finding data of books
+        app.get('/horrorBooks', async (req, res) => {
+            const query = {}
+            const result = await appointmentOptionCollection.find(query).project({ }).toArray();
+            res.send(result);
+        })
+        app.get('/thrillerBooks', async (req, res) => {
+            const query = {}
+            const result = await thrillerBookOptionCollection.find(query).project({  }).toArray();
+            res.send(result);
+        })
+        app.get('/adventureBooks', async (req, res) => {
+            const query = {}
+            const result = await adventureBookOptionCollection.find(query).project({  }).toArray();
             res.send(result);
         })
 
