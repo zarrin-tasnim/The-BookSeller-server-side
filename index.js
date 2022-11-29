@@ -94,7 +94,7 @@ async function run() {
 
         app.get('/appointmentSpecialty', async (req, res) => {
             const query = {}
-            const result = await allBooksCollection.find(query).project({ name: 1 }).toArray();
+            const result = await categoryNameCollection.find(query).project({ name: 1 }).toArray();
             res.send(result);
         })
 
@@ -201,7 +201,7 @@ async function run() {
             res.send(result);
         });
 
-        app.put('/users/admin/:id', verifyJWT, verifyAdmin, async (req, res) => {
+        app.put('/users/admin/:id',  async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) }
             const options = { upsert: true };
