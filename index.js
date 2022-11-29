@@ -40,10 +40,9 @@ function verifyJWT(req, res, next) {
 
 async function run() {
     try {
-        const categoryNameCollection = client.db('theBookSellerPortal').collection('book-category.json');
-        const allBooksCollection = client.db('theBookSellerPortal').collection('horrorBooks.json');
-        const thrillerBookOptionCollection = client.db('theBookSellerPortal').collection('thrillerBooks.json');
-        const adventureBookOptionCollection = client.db('theBookSellerPortal').collection('AdventureBooks.json');
+        const categoryNameCollection = client.db('theBookSellerPortal').collection('book-category');
+        const allBooksCollection = client.db('theBookSellerPortal').collection('horrorBooks');
+
         const bookingsCollection = client.db('theBookSellerPortal').collection('bookings');
         const usersCollection = client.db('theBookSellerPortal').collection('users');
         const doctorsCollection = client.db('theBookSellerPortal').collection('doctors');
@@ -127,14 +126,15 @@ async function run() {
         //     ]).toArray();
         //     res.send(options);
         // })
-       
 
+        // for getting all category name
         app.get('/categories', async (req, res) => {
             const query = {};
             const category = await categoryNameCollection.find(query).toArray();
             res.send(category);
         });
 
+        // for getting all category product
         app.get('/categories/:id', async (req, res) => {
             const id = req.params.id;
             const query = { id: (id) };
@@ -152,24 +152,24 @@ async function run() {
         // finding data of books
         app.get('/products', async (req, res) => {
             const query = {}
-            const result = await categoryNameCollection.find(query).project({ }).toArray();
+            const result = await categoryNameCollection.find(query).project({}).toArray();
             res.send(result);
         })
         app.get('/horrorBooks', async (req, res) => {
             const query = {}
-            const result = await appointmentOptionCollection.find(query).project({ }).toArray();
+            const result = await appointmentOptionCollection.find(query).project({}).toArray();
             res.send(result);
         })
-        app.get('/thrillerBooks', async (req, res) => {
-            const query = {}
-            const result = await thrillerBookOptionCollection.find(query).project({  }).toArray();
-            res.send(result);
-        })
-        app.get('/adventureBooks', async (req, res) => {
-            const query = {}
-            const result = await adventureBookOptionCollection.find(query).project({  }).toArray();
-            res.send(result);
-        })
+        // app.get('/thrillerBooks', async (req, res) => {
+        //     const query = {}
+        //     const result = await thrillerBookOptionCollection.find(query).project({  }).toArray();
+        //     res.send(result);
+        // })
+        // app.get('/adventureBooks', async (req, res) => {
+        //     const query = {}
+        //     const result = await adventureBookOptionCollection.find(query).project({  }).toArray();
+        //     res.send(result);
+        // })
 
         /***
          * API Naming Convention 
