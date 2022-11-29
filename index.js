@@ -140,7 +140,7 @@ async function run() {
 
         app.post('/create-payment-intent', async (req, res) => {
             const booking = req.body;
-            const price = booking.price;
+            const price = booking.resale_price;
             const amount = price * 100;
 
             const paymentIntent = await stripe.paymentIntents.create({
@@ -201,7 +201,7 @@ async function run() {
             res.send(result);
         });
 
-        app.put('/users/admin/:id',  async (req, res) => {
+        app.put('/users/admin/:id', async (req, res) => {
             const id = req.params.id;
             const filter = { _id: ObjectId(id) }
             const options = { upsert: true };
